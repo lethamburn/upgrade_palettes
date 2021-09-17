@@ -35,4 +35,52 @@ module.exports = {
       }
     });
   },
+  //Metodo para retornar todos los colors registrados en la base de datos
+  getAll: function (req, res, next) {
+    Color.find({}, function (err, colors) {
+      if (err) {
+        next(err);
+      } else {
+        res.json({
+          status: 200,
+          message: HTTPSTATUSCODE[200],
+          data: { colors: colors },
+        });
+      }
+    });
+  },
+  //Metodo para actualizar algun registro de la base de datos
+  updateById: function (req, res, next) {
+    Color.findByIdAndUpdate(
+      req.params.colorId,
+      {
+        hex: req.body.hex,
+        name: req.body.name,
+        rgb: req.body.rgb,
+      },
+      function (err, colorInfo) {
+        if (err) next(err);
+        else {
+          res.json({
+            status: 200,
+            message: HTTPSTATUSCODE[200],
+            data: { color: colorInfo },
+          });
+        }
+      }
+    );
+  },
+  //Metodo para eliminar algun registro de la base de datos
+  deleteById: function (req, res, next) {
+    Color.findByIdAndRemove(req.params.colorId, function (err, colorInfo) {
+      if (err) next(err);
+      else {
+        res.json({
+          status: 200,
+          message: HTTPSTATUSCODE[200],
+          data: { color: colorInfo },
+        });
+      }
+    });
+  },
 };
