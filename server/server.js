@@ -3,6 +3,7 @@ const express = require("express");
 const logger = require("morgan");
 const users = require("./app/api/routes/user.routes");
 const colors = require("./app/api/routes/color.routes");
+const palettes = require("./app/api/routes/palette.routes");
 const mongoose = require("./app/config/database");
 const HTTPSTATUSCODE = require("./app/utils/httpStatusCode");
 
@@ -17,6 +18,7 @@ app.use(logger("dev"));
 // public route
 app.use("/users", users);
 app.use("/colors", colors);
+app.use("/palettes", palettes);
 
 app.use(function (req, res, next) {
   let err = new Error();
