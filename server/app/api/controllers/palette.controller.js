@@ -60,7 +60,6 @@ module.exports = {
         name: req.body.name,
         description: req.body.description,
         colors: req.body.colors,
-        author: req.body.author,
       },
       function (err, paletteInfo) {
         if (err) next(err);
