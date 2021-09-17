@@ -46,5 +46,8 @@ module.exports = {
       }
     });
   },
-  
+  //Logout and destroy the token
+  logout: function (req, res, next) {
+    res.json({ status: 200, message: HTTPSTATUSCODE[200], token: null });
+  },
 };

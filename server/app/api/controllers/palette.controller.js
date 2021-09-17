@@ -52,23 +52,23 @@ module.exports = {
       .populate("colors")
       .populate("author");
   },
-};
-/*  //Metodo para actualizar algun registro de la base de datos
+  //Metodo para actualizar algun registro de la base de datos
   updateById: function (req, res, next) {
-    Color.findByIdAndUpdate(
-      req.params.colorId,
+    Palette.findByIdAndUpdate(
+      req.params.paletteId,
       {
-        hex: req.body.hex,
         name: req.body.name,
-        rgb: req.body.rgb,
+        description: req.body.description,
+        colors: req.body.colors,
+        author: req.body.author,
       },
-      function (err, colorInfo) {
+      function (err, paletteInfo) {
         if (err) next(err);
         else {
           res.json({
             status: 200,
             message: HTTPSTATUSCODE[200],
-            data: { color: colorInfo },
+            data: { palette: paletteInfo },
           });
         }
       }
@@ -76,15 +76,18 @@ module.exports = {
   },
   //Metodo para eliminar algun registro de la base de datos
   deleteById: function (req, res, next) {
-    Color.findByIdAndRemove(req.params.colorId, function (err, colorInfo) {
-      if (err) next(err);
-      else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { color: colorInfo },
-        });
+    Palette.findByIdAndRemove(
+      req.params.paletteId,
+      function (err, paletteInfo) {
+        if (err) next(err);
+        else {
+          res.json({
+            status: 200,
+            message: HTTPSTATUSCODE[200],
+            data: { palette: paletteInfo },
+          });
+        }
       }
-    });
+    );
   },
-};*/
+};
