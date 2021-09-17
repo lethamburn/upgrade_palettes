@@ -8,43 +8,56 @@ const jwt = require("jsonwebtoken");
 const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 
 // Codificamos las operaciones que se podran realizar con relacion a los usuarios
-module.exports = {
-  create: function (req, res, next) {
-    User.create(
-      {
-        name: req.body.name,
-        emoji: req.body.emoji,
-        email: req.body.email,
-        password: req.body.password,
-      },
-      function (err, result) {
-        if (err) next(err);
-        else
-          res.json({ status: 201, message: HTTPSTATUSCODE[201], data: null });
-      }
-    );
-  },
-  authenticate: function (req, res, next) {
-    User.findOne({ email: req.body.email }, function (err, userInfo) {
-      if (err) {
-        next(err);
-      } else {
-        if (bcrypt.compareSync(req.body.password, userInfo.password)) {
-          const token = jwt.sign(
-            { id: userInfo._id },
-            req.app.get("secretKey"),
-            { expiresIn: "1h" }
-          );
-          res.json({
-            status: 200,
-            message: HTTPSTATUSCODE[200],
-            data: { user: userInfo, token: token },
-          });
-        } else {
-          res.json({ status: 400, message: HTTPSTATUSCODE[400], data: null });
-        }
-      }
+const createUser = async (req, res, next) => {
+  try {
+    const newUser = new User();
+    newUser.name = req.body.name;
+    newUser.emoji = req.body.emoji;
+    newUser.email = req.body.email;
+    newUser.password = req.body.password;
+    newUser.favPalettes = [];
+
+    //comprobar si el user existe
+    const userDb = await newUser.save();
+    return res.json({
+      status: 201,
+      message: HTTPSTATUSCODE[201],
+      data: null
     });
-  },
+    //fuera return y llamamos a autenticuate. o creamos token no se!
+  } catch (err) {
+    return next(err);
+  }
+}
+
+const authenticate = async (req, res, next) => {
+  try{
+    const userInfo = await User.findOne({email : req.body.email})
+
+    if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+      const token = jwt.sign(
+        { id: userInfo._id },
+        req.app.get("secretKey"),
+        { expiresIn: "1h" }
+      );
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { user: userInfo, token: token },
+      });
+    } else {
+      return res.json({ status: 400, message: HTTPSTATUSCODE[400], data: null });
+    }
+  }catch(err){
+    return next(err);
+  }
+}
   
-};
+//logout
+
+module.exports = {
+  createUser,
+  authenticate
+}
+
+
