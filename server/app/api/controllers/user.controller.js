@@ -16,6 +16,7 @@ module.exports = {
         emoji: req.body.emoji,
         email: req.body.email,
         password: req.body.password,
+        favPalettes: req.body.favPalettes,
       },
       function (err, result) {
         if (err) next(err);
@@ -45,6 +46,24 @@ module.exports = {
         }
       }
     });
+  },
+  addFavPalette: function (req, res, next) {
+    User.findByIdAndUpdate(
+      req.params.userId,
+      { $push: { favPalettes: req.body.favPalettes } },
+      { new: true },
+      function (err, userInfo) {
+        if (err) {
+          next(err);
+        } else {
+          res.json({
+            status: 200,
+            message: HTTPSTATUSCODE[200],
+            data: userInfo,
+          });
+        }
+      }
+    );
   },
   //Logout and destroy the token
   logout: function (req, res, next) {
