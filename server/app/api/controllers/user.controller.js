@@ -33,7 +33,7 @@ module.exports = {
           const token = jwt.sign(
             { id: userInfo._id },
             req.app.get("secretKey"),
-            { expiresIn: 3600 * 1000 }
+            { expiresIn: "1h" }
           );
           res.json({
             status: 200,
