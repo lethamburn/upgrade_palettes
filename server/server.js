@@ -9,6 +9,7 @@ const colors = require("./app/api/routes/color.routes");
 const palettes = require("./app/api/routes/palette.routes");
 //Otras importaciones
 const HTTPSTATUSCODE = require("./app/utils/httpStatusCode");
+const cors = require("cors");
 
 //Conectamos con la db
 connect();
@@ -17,6 +18,18 @@ connect();
 const app = express();
 
 app.set("secretKey", "nodeRestApi"); // jwt secret token
+
+server.use((req, res, next) => {
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+server.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:4200'],
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,10 +48,11 @@ app.use((req, res, next) => {
 });
 
 // handle errors
-app.use((error, req, res, next) => {
-  return res.status(error.status || 500).json(error.message || 'Unexpected error');
+app.use((err, req, res, next) => {
+  return res.status(err.status || 500).json(err.message || 'Unexpected error');
 })
 
+app.disable('x-powered-by')
 //Levantamos el servidor
 app.listen(3000, () => {
   console.log("Node server listening on port 3000");

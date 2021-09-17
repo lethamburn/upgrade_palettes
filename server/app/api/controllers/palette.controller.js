@@ -4,87 +4,115 @@ const Palette = require("../models/Palette");
 const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 
 //Codificamos las operaciones que se podran realizar con relacion a los paletas
-module.exports = {
-  // Metodo para crear una nueva paleta
-  create: function (req, res, next) {
-    Palette.create(
-      {
-        name: req.body.name,
-        description: req.body.description,
-        colors: req.body.colors,
-        author: req.body.author,
-      },
-      function (err, result) {
-        if (err) next(err);
-        else
-          res.json({ status: 201, message: HTTPSTATUSCODE[201], data: result });
-      }
-    );
-  },
-  // Metodo para la busqueda de paletas por ID
-  getById: function (req, res, next) {
-    console.log(req.body);
-    Palette.findById(req.params.paletteId, function (err, paletteInfo) {
-      if (err) {
-        next(err);
-      } else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { palette: paletteInfo },
-        });
-      }
+
+// Metodo para crear una nueva paleta
+const newPalette = async (req, res, next) => {
+  try {
+    const newPalette = new Palette();
+    newPalette.name = req.body.name;
+    newPalette.description = req.body.description;
+    newPalette.colors = req.body.colors;
+    newPalette.author = req.user._id;  ///este id usuario lo sacamos el token/user logueado
+    const paletteDb = await newPalette.save()
+    return res.json({
+      status: 201,
+      message: HTTPSTATUSCODE[201],
+      data: { palettes: paletteDb }
     });
-  },
-  //Metodo para retornar todas las paletas registradas en la base de datos
-  getAll: function (req, res, next) {
-    Palette.find({}, function (err, palettes) {
-      if (err) {
-        next(err);
-      } else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { palettes: palettes },
-        });
-      }
-    })
-      .populate("colors")
-      .populate("author");
-  },
+  } catch (err) {
+    return next(err);
+  }
+}
+
+//Metodo para retornar todas las paletas registradas en la base de datos
+const getAllPalettes = async (req, res, next) => {
+  try {
+    if (req.query.page) {
+      const page = parseInt(req.query.page);
+      const skip = (page - 1) * 20;
+      const palettes = await Palette.find().skip(skip).limit(20).populate("colors").populate("author");
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { palettes: palettes },
+      });
+    } else {
+      const palettes = await Palette.find().populate("colors").populate("author");
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { palettes: palettes },
+      });
+    }
+  } catch (err) {
+    return next(err);
+  }
 };
-/*  //Metodo para actualizar algun registro de la base de datos
-  updateById: function (req, res, next) {
-    Color.findByIdAndUpdate(
-      req.params.colorId,
-      {
-        hex: req.body.hex,
-        name: req.body.name,
-        rgb: req.body.rgb,
-      },
-      function (err, colorInfo) {
-        if (err) next(err);
-        else {
-          res.json({
-            status: 200,
-            message: HTTPSTATUSCODE[200],
-            data: { color: colorInfo },
-          });
-        }
-      }
-    );
-  },
-  //Metodo para eliminar algun registro de la base de datos
-  deleteById: function (req, res, next) {
-    Color.findByIdAndRemove(req.params.colorId, function (err, colorInfo) {
-      if (err) next(err);
-      else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { color: colorInfo },
-        });
-      }
+
+// Metodo para la busqueda de paletas por ID
+const getPalettesById = async (req, res, next) => {
+  try {
+    const { paletteId } = req.params;
+    const paletteDb = await Palette.findById(paletteId).populate("colors").populate("author");
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { palettes: paletteDb },
     });
-  },
-};*/
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//Metodo para eliminar algun registro de la base de datos
+const deletePaletteById = async (req, res, next) => {
+  try {
+    const { paletteId } = req.params;
+    const paletteDeleted = await Palette.findByIdAndDelete(paletteId);
+    if (!paletteDeleted) {
+      return res.json({
+        status: 200,
+        message: "There is not a palette with that Id",
+        data: null
+      })
+    } else {
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { palettes: paletteDeleted },
+      });
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//Metodo para actualizar algun registro de la base de datos
+const updatePaletteById = async (req, res, next) =>{
+  try {
+    const { paletteId } = req.params;
+    const paletteToUpadte = new Palette();
+    if(req.body.name) paletteToUpadte.name = req.body.name;
+    if(req.body.description) paletteToUpadte.description = req.body.description;
+    if(req.body.colors) paletteToUpadte.colors = req.body.colors;
+
+    const paletteUpdated = await Palette.findByIdAndUpdate(paletteId, paletteToUpadte);
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { palettes: paletteUpdated }
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+
+module.exports = {
+  newPalette,
+  getAllPalettes,
+  getPalettesById,
+  deletePaletteById,
+  updatePaletteById
+}
+
