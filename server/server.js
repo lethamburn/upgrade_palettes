@@ -1,16 +1,23 @@
 //Imports
 const express = require("express");
 const logger = require("morgan");
+//Importamos la conexion a la db
+const {connect} = require("./app/config/database");
+//Importamos las rutas
 const users = require("./app/api/routes/user.routes");
 const colors = require("./app/api/routes/color.routes");
 const palettes = require("./app/api/routes/palette.routes");
-const mongoose = require("./app/config/database");
+//Otras importaciones
 const HTTPSTATUSCODE = require("./app/utils/httpStatusCode");
 
-//Config
+//Conectamos con la db
+connect();
+
+//Config app
 const app = express();
-mongoose.connect();
+
 app.set("secretKey", "nodeRestApi"); // jwt secret token
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
@@ -20,7 +27,7 @@ app.use("/users", users);
 app.use("/colors", colors);
 app.use("/palettes", palettes);
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   let err = new Error();
   err.status = 404;
   err.message = HTTPSTATUSCODE[404];
@@ -28,13 +35,11 @@ app.use(function (req, res, next) {
 });
 
 // handle errors
-app.use(function (err, req, res, next) {
-  console.log(err);
+app.use((error, req, res, next) => {
+  return res.status(error.status || 500).json(error.message || 'Unexpected error');
+})
 
-  if (err.status === 404)
-    res.status(404).json({ message: HTTPSTATUSCODE[404] });
-  else res.status(500).json({ message: HTTPSTATUSCODE[500] });
-});
-app.listen(3000, function () {
+//Levantamos el servidor
+app.listen(3000, () => {
   console.log("Node server listening on port 3000");
 });

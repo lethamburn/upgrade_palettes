@@ -4,83 +4,99 @@ const Color = require("../models/Color");
 const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 
 //Codificamos las operaciones que se podran realizar con relacion a los colores
-module.exports = {
-  // Metodo para crear un nuevo color
-  create: function (req, res, next) {
-    Color.create(
-      {
-        hex: req.body.hex,
-        name: req.body.name,
-        rgb: req.body.rgb,
-      },
-      function (err, result) {
-        if (err) next(err);
-        else
-          res.json({ status: 201, message: HTTPSTATUSCODE[201], data: result });
-      }
-    );
-  },
-  // Metodo para la busqueda de colors por ID
-  getById: function (req, res, next) {
-    console.log(req.body);
-    Color.findById(req.params.colorId, function (err, colorInfo) {
-      if (err) {
-        next(err);
-      } else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { color: colorInfo },
-        });
-      }
+
+// Metodo para crear un nuevo color
+const newColor = async (req, res, next) => {
+  try {
+    const newColor = new Color(req.body);
+    const colorDb = await newColor.save()
+    return res.json({
+      status: 201,
+      message: HTTPSTATUSCODE[201],
+      data: { colors: colorDb }
     });
-  },
-  //Metodo para retornar todos los colors registrados en la base de datos
-  getAll: function (req, res, next) {
-    Color.find({}, function (err, colors) {
-      if (err) {
-        next(err);
-      } else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { colors: colors },
-        });
-      }
-    });
-  },
-  //Metodo para actualizar algun registro de la base de datos
-  updateById: function (req, res, next) {
-    Color.findByIdAndUpdate(
-      req.params.colorId,
-      {
-        hex: req.body.hex,
-        name: req.body.name,
-        rgb: req.body.rgb,
-      },
-      function (err, colorInfo) {
-        if (err) next(err);
-        else {
-          res.json({
-            status: 200,
-            message: HTTPSTATUSCODE[200],
-            data: { color: colorInfo },
-          });
-        }
-      }
-    );
-  },
-  //Metodo para eliminar algun registro de la base de datos
-  deleteById: function (req, res, next) {
-    Color.findByIdAndRemove(req.params.colorId, function (err, colorInfo) {
-      if (err) next(err);
-      else {
-        res.json({
-          status: 200,
-          message: HTTPSTATUSCODE[200],
-          data: { color: colorInfo },
-        });
-      }
-    });
-  },
+  } catch (err) {
+    return next(err);
+  }
+}
+
+//Metodo para retornar todos los colors registrados en la base de datos
+//se le añade paginación
+const getAllColors = async (req, res, next) => {
+  try {
+    if (req.query.page) {
+      const page = parseInt(req.query.page);
+      const skip = (page - 1) * 20;
+      const colors = await Color.find().skip(skip).limit(20);
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { colors: colors },
+      });
+    } else {
+      const colors = await Color.find();
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { colors: colors },
+      });
+    }
+  } catch (err) {
+    return next(err);
+  }
 };
+
+// Metodo para la busqueda de colors por ID
+const getColorById = async (req, res, next) => {
+  try {
+    const { colorId } = req.params;
+    const colorById = await Color.findById(colorId);
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { colors: colorById }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//Metodo para eliminar algun registro de la base de datos
+const deleteColorById = async (req, res, next) => {
+  try {
+    const { colorId } = req.params;
+    const colorDeleted = await Color.findByIdAndDelete(colorId);
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { colors: colorDeleted }
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//Metodo para actualizar algun registro de la base de datos
+const updateColorById = async (req, res, next) => {
+  try {
+    const { colorId } = req.params;
+    const colorToUpdate = req.body;
+    const colorUpdated = await Color.findByIdAndUpdate(colorId, colorToUpdate);
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { colors: colorUpdated }
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+module.exports = {
+  newColor,
+  getAllColors,
+  getColorById,
+  deleteColorById,
+  updateColorById
+}
+

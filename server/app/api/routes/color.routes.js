@@ -1,12 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const colorController = require("../controllers/color.controller");
+const {
+    newColor,
+    getAllColors,
+    getColorById,
+    deleteColorById,
+    updateColorById
+} = require("../controllers/color.controller");
 
-router.post("/create", colorController.create);
-router.get("/:colorId", colorController.getById);
-router.get("/", colorController.getAll);
-router.put("/:colorId", colorController.updateById);
-router.delete("/:colorId", colorController.deleteById);
+router.post("/create", newColor);
+router.get("/", getAllColors);
+router.get("/:colorId", getColorById);
+router.delete("/:colorId", deleteColorById);
+router.put("/:colorId", updateColorById);
 
 module.exports = router;
