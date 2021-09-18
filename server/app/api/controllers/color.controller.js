@@ -5,7 +5,7 @@ const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 
 //Codificamos las operaciones que se podran realizar con relacion a los colores
 module.exports = {
-  // Metodo para crear un nuevo color
+  // Metodo para crear un nuevo Color
   create: function (req, res, next) {
     Color.create(
       {
