@@ -9,9 +9,10 @@ const {
     updateColorById
 } = require("../controllers/color.controller");
 
-router.post("/create", newColor);
 router.get("/", getAllColors);
 router.get("/:colorId", getColorById);
+
+router.post("/create", newColor);
 router.delete("/:colorId", deleteColorById);
 router.put("/:colorId", updateColorById);
 

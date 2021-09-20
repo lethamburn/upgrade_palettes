@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 
 const isAuth = (req, res, next) => {
+    
     const authorization = req.headers.authorization
     //console.log("req.headers.auth", req.headers.authorization) // bearer kdjfkdjfkjflkd...
     //console.log("id eq.headers.auth", req.headers.authorization.id) //esto es udefined
@@ -10,7 +11,7 @@ const isAuth = (req, res, next) => {
         res.end("Falta la cabecera authorization")
         return 
     }
-   
+ 
     const splits = authorization.split(" ")
     if( splits.length!=2 || splits[0]!="Bearer"){
         res.statusCode = 400
@@ -22,8 +23,8 @@ const isAuth = (req, res, next) => {
     //console.log("JWT:"+jwtString)
     try{
         var token = jwt.verify(jwtString, req.app.get("secretKey"));
-        token.user.password=null;
-        //console.log("token tras verify",token)  
+        
+        console.log("token tras verify",token)  
     } catch(e){
         //console.log(e)
         res.statusCode = 400
@@ -35,7 +36,7 @@ const isAuth = (req, res, next) => {
         return next(err)
     }
     const autoridad = {
-        user   : token.user,
+        id   : token.id,
     }
     //Se la asignamos al request
     req.autoridad = autoridad

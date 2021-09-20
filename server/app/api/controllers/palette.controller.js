@@ -13,7 +13,7 @@ const newPalette = async (req, res, next) => {
     newPalette.name = req.body.name;
     newPalette.description = req.body.description;
     newPalette.colors = req.body.colors;
-    newPalette.author = req.autoridad.user._id;  ///este id usuario lo sacamos el token/user logueado
+    newPalette.author = req.autoridad.id;  ///este id usuario lo sacamos el token/user logueado
     const paletteDb = await newPalette.save()
     return res.json({
       status: 201,
@@ -31,14 +31,14 @@ const getAllPalettes = async (req, res, next) => {
     if (req.query.page) {
       const page = parseInt(req.query.page);
       const skip = (page - 1) * 20;
-      const palettes = await Palette.find().skip(skip).limit(20).populate("colors").populate("author");
+      const palettes = await Palette.find().skip(skip).limit(20).populate("colors");
       return res.json({
         status: 200,
         message: HTTPSTATUSCODE[200],
         data: { palettes: palettes },
       });
     } else {
-      const palettes = await Palette.find().populate("colors").populate("author");
+      const palettes = await Palette.find().populate("colors");
       return res.json({
         status: 200,
         message: HTTPSTATUSCODE[200],
@@ -116,7 +116,7 @@ const updatePaletteById = async (req, res, next) =>{
 
 const getAllPalettesByUser = async (req, res, next) => {
   try{
-    const author = req.autoridad.user._id;
+    const author = req.autoridad.id;
     const allPalettesByUser = await Palette.find({author: author}).populate("colors");
     return res.json({
       status: 200,
