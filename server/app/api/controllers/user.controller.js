@@ -44,8 +44,8 @@ const authenticate = async (req, res, next) => {
       );
       //eliminar el password de user id
       userInfo.password = null;
-      console.log('userInfo, ',userInfo)
-      console.log('token, ',token)
+      //console.log('userInfo, ',userInfo)
+      //console.log('token, ',token)
       
       
       

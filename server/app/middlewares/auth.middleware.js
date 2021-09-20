@@ -27,12 +27,12 @@ const isAuth = (req, res, next) => {
     } catch(e){
         //console.log(e)
         res.statusCode = 400
-        const error = {
+        const err = {
             codigo : 400,
             descripcion : "Error con el JWT: "+e.message
         }
-        response.json(error)
-        return
+        //response.json(err)
+        return next(err)
     }
     const autoridad = {
         user   : token.user,

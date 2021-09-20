@@ -69,6 +69,9 @@ const getPalettesById = async (req, res, next) => {
 const deletePaletteById = async (req, res, next) => {
   try {
     const { paletteId } = req.params;
+
+    //comprobar que el user del token es el mismo que el author de la paleta.
+
     const paletteDeleted = await Palette.findByIdAndDelete(paletteId);
     if (!paletteDeleted) {
       return res.json({
@@ -92,6 +95,9 @@ const deletePaletteById = async (req, res, next) => {
 const updatePaletteById = async (req, res, next) =>{
   try {
     const { paletteId } = req.params;
+
+    //comprobar que el user del token es igual al author de la palete.
+    
     const paletteToUpadte = new Palette();
     if(req.body.name) paletteToUpadte.name = req.body.name;
     if(req.body.description) paletteToUpadte.description = req.body.description;
@@ -108,12 +114,27 @@ const updatePaletteById = async (req, res, next) =>{
   }
 }
 
+const getAllPalettesByUser = async (req, res, next) => {
+  try{
+    const author = req.autoridad.user._id;
+    const allPalettesByUser = await Palette.find({author: author}).populate("colors");
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { palettes: allPalettesByUser },
+    });
+  }catch(err){
+    return next(err)
+  }
+}
+
 
 module.exports = {
   newPalette,
   getAllPalettes,
   getPalettesById,
   deletePaletteById,
-  updatePaletteById
+  updatePaletteById,
+  getAllPalettesByUser
 }
 
