@@ -35,12 +35,13 @@ const isAuth = (req, res, next) => {
         //response.json(err)
         return next(err)
     }
-    const autoridad = {
+    const authority = {
         id   : token.id,
+        name: token.name
     }
     //Se la asignamos al request
-    req.autoridad = autoridad
-    console.log("autoridad", autoridad)
+    req.authority = authority
+    console.log("authority", authority)
     next()
 }
 

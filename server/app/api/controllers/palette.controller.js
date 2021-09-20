@@ -8,12 +8,12 @@ const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 // Metodo para crear una nueva paleta
 const newPalette = async (req, res, next) => {
   try {
-    console.log("req.autoridad", req.autoridad)
+    //console.log("req.authority", req.authority)
     const newPalette = new Palette();
     newPalette.name = req.body.name;
     newPalette.description = req.body.description;
     newPalette.colors = req.body.colors;
-    newPalette.author = req.autoridad.id;  ///este id usuario lo sacamos el token/user logueado
+    newPalette.author = req.authority.id;  ///este id usuario lo sacamos el token/user logueado
     const paletteDb = await newPalette.save()
     return res.json({
       status: 201,
@@ -116,7 +116,8 @@ const updatePaletteById = async (req, res, next) =>{
 
 const getAllPalettesByUser = async (req, res, next) => {
   try{
-    const author = req.autoridad.id;
+    const author = req.authority.id;
+    console.log(req.authority.name)
     const allPalettesByUser = await Palette.find({author: author}).populate("colors");
     return res.json({
       status: 200,
