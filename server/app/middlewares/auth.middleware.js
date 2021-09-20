@@ -7,16 +7,20 @@ const isAuth = (req, res, next) => {
     //console.log("id eq.headers.auth", req.headers.authorization.id) //esto es udefined
     
     if(!authorization){
-        res.statusCode = 401
-        res.end("Falta la cabecera authorization")
-        return 
+        return res.json({
+            status: 401,
+            message: HTTPSTATUSCODE[401],
+            data: null
+        })
     }
  
     const splits = authorization.split(" ")
     if( splits.length!=2 || splits[0]!="Bearer"){
-        res.statusCode = 400
-        res.end("La cabecera authorization está mal construida")
-        return
+        return res.json({
+            status: 400,
+            message: HTTPSTATUSCODE[400],
+            data: null
+        })
     }
 
     const jwtString = splits[1]
@@ -25,14 +29,13 @@ const isAuth = (req, res, next) => {
         var token = jwt.verify(jwtString, req.app.get("secretKey"));
         
         //console.log("token tras verify",token)  
-    } catch(e){
+    } catch(err){
         //console.log(e)
-        res.statusCode = 400
+        /* res.statusCode = 400
         const err = {
             codigo : 400,
             descripcion : "Error con el JWT: "+e.message
-        }
-        //response.json(err)
+        } */
         return next(err)
     }
     const authority = {
@@ -47,5 +50,4 @@ const isAuth = (req, res, next) => {
 
 module.exports = {
     isAuth,
-
 }
