@@ -24,7 +24,7 @@ const isAuth = (req, res, next) => {
     try{
         var token = jwt.verify(jwtString, req.app.get("secretKey"));
         
-        console.log("token tras verify",token)  
+        //console.log("token tras verify",token)  
     } catch(e){
         //console.log(e)
         res.statusCode = 400
@@ -41,7 +41,7 @@ const isAuth = (req, res, next) => {
     }
     //Se la asignamos al request
     req.authority = authority
-    console.log("authority", authority)
+    //console.log("authority", authority)
     next()
 }
 

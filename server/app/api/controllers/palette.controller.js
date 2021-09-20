@@ -69,22 +69,31 @@ const getPalettesById = async (req, res, next) => {
 const deletePaletteById = async (req, res, next) => {
   try {
     const { paletteId } = req.params;
+    const authority = req.authority.id
+    const userPalette = await Palette.findById(paletteId)
 
-    //comprobar que el user del token es el mismo que el author de la paleta.
+    if (authority == userPalette.author._id) {
 
-    const paletteDeleted = await Palette.findByIdAndDelete(paletteId);
-    if (!paletteDeleted) {
-      return res.json({
-        status: 200,
-        message: "There is not a palette with that Id",
-        data: null
-      })
+      const paletteDeleted = await Palette.findByIdAndDelete(paletteId);
+      if (!paletteDeleted) {
+        return res.json({
+          status: 200,
+          message: "There is not a palette with that Id",
+          data: null
+        })
+      } else {
+        return res.json({
+          status: 200,
+          message: HTTPSTATUSCODE[200],
+          data: { palettes: paletteDeleted },
+        });
+      }
     } else {
       return res.json({
-        status: 200,
-        message: HTTPSTATUSCODE[200],
-        data: { palettes: paletteDeleted },
-      });
+        status: 403,
+        message: HTTPSTATUSCODE[403],
+        data: null
+      })
     }
   } catch (err) {
     return next(err);
@@ -95,20 +104,31 @@ const deletePaletteById = async (req, res, next) => {
 const updatePaletteById = async (req, res, next) => {
   try {
     const { paletteId } = req.params;
+    const authority = req.authority.id
+    const userPalette = await Palette.findById(paletteId)
 
-    //comprobar que el user del token es igual al author de la palete.
+    if (authority == userPalette.author._id) {
 
-    const paletteToUpadte = new Palette();
-    if (req.body.name) paletteToUpadte.name = req.body.name;
-    if (req.body.description) paletteToUpadte.description = req.body.description;
-    if (req.body.colors) paletteToUpadte.colors = req.body.colors;
+      const paletteToUpdate = new Palette();
+      if (req.body.name) paletteToUpdate.name = req.body.name;
+      if (req.body.description) paletteToUpdate.description = req.body.description;
+      if (req.body.colors) paletteToUpdate.colors = req.body.colors;
+      paletteToUpdate._id = paletteId;
 
-    const paletteUpdated = await Palette.findByIdAndUpdate(paletteId, paletteToUpadte);
-    return res.json({
-      status: 200,
-      message: HTTPSTATUSCODE[200],
-      data: { palettes: paletteUpdated }
-    });
+      const paletteUpdated = await Palette.findByIdAndUpdate(paletteId, paletteToUpdate);
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { palettes: paletteUpdated }
+      });
+    } else {
+      return res.json({
+        status: 403,
+        message: HTTPSTATUSCODE[403],
+        data: null
+      })
+    }
+
   } catch (err) {
     return next(err);
   }
