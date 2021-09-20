@@ -6,7 +6,7 @@ const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 //Codificamos las operaciones que se podran realizar con relacion a los colores
 
 // Metodo para crear un nuevo color
-const newColor = async (req, res, next) => {
+/* const newColor = async (req, res, next) => {
   try {
     const newColor = new Color(req.body);
     const colorDb = await newColor.save()
@@ -18,7 +18,7 @@ const newColor = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-}
+} */
 
 //Metodo para retornar todos los colors registrados en la base de datos
 //se le añade paginación
@@ -62,7 +62,7 @@ const getColorById = async (req, res, next) => {
 };
 
 //Metodo para eliminar algun registro de la base de datos
-const deleteColorById = async (req, res, next) => {
+/* const deleteColorById = async (req, res, next) => {
   try {
     const { colorId } = req.params;
     const colorDeleted = await Color.findByIdAndDelete(colorId);
@@ -75,9 +75,9 @@ const deleteColorById = async (req, res, next) => {
     return next(err);
   }
 };
-
+ */
 //Metodo para actualizar algun registro de la base de datos
-const updateColorById = async (req, res, next) => {
+/* const updateColorById = async (req, res, next) => {
   try {
     const { colorId } = req.params;
     const colorToUpdate = req.body;
@@ -90,13 +90,13 @@ const updateColorById = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-}
+} */
 
 module.exports = {
-  newColor,
+  //newColor,
   getAllColors,
   getColorById,
-  deleteColorById,
-  updateColorById
+  /* deleteColorById,
+  updateColorById */
 }
 

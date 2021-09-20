@@ -92,16 +92,16 @@ const deletePaletteById = async (req, res, next) => {
 };
 
 //Metodo para actualizar algun registro de la base de datos
-const updatePaletteById = async (req, res, next) =>{
+const updatePaletteById = async (req, res, next) => {
   try {
     const { paletteId } = req.params;
 
     //comprobar que el user del token es igual al author de la palete.
-    
+
     const paletteToUpadte = new Palette();
-    if(req.body.name) paletteToUpadte.name = req.body.name;
-    if(req.body.description) paletteToUpadte.description = req.body.description;
-    if(req.body.colors) paletteToUpadte.colors = req.body.colors;
+    if (req.body.name) paletteToUpadte.name = req.body.name;
+    if (req.body.description) paletteToUpadte.description = req.body.description;
+    if (req.body.colors) paletteToUpadte.colors = req.body.colors;
 
     const paletteUpdated = await Palette.findByIdAndUpdate(paletteId, paletteToUpadte);
     return res.json({
@@ -115,16 +115,26 @@ const updatePaletteById = async (req, res, next) =>{
 }
 
 const getAllPalettesByUser = async (req, res, next) => {
-  try{
+  try {
     const author = req.authority.id;
-    console.log(req.authority.name)
-    const allPalettesByUser = await Palette.find({author: author}).populate("colors");
-    return res.json({
-      status: 200,
-      message: HTTPSTATUSCODE[200],
-      data: { palettes: allPalettesByUser },
-    });
-  }catch(err){
+    if (req.query.page) {
+      const page = parseInt(req.query.page);
+      const skip = (page - 1) * 20;
+      const allPalettesByUser = await Palette.find({ author: author }).skip(skip).limit(20).populate("colors");
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { palettes: allPalettesByUser },
+      });
+    } else {
+      const allPalettesByUser = await Palette.find({ author: author }).populate("colors");
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: { palettes: allPalettesByUser },
+      });
+    }
+  } catch (err) {
     return next(err)
   }
 }

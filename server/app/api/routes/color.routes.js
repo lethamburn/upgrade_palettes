@@ -12,8 +12,9 @@ const {
 router.get("/", getAllColors);
 router.get("/:colorId", getColorById);
 
-router.post("/create", newColor);
+//securizar estas rutas con rol admin o eliminarlas
+/* router.post("/create", newColor);
 router.delete("/:colorId", deleteColorById);
-router.put("/:colorId", updateColorById);
+router.put("/:colorId", updateColorById); */
 
 module.exports = router;
