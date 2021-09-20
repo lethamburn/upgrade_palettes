@@ -1,4 +1,5 @@
 const express = require("express");
+const { isAuth } = require("../../middlewares/auth.middleware");
 const router = express.Router();
 
 const {
@@ -9,8 +10,9 @@ const {
     updatePaletteById
 } = require("../controllers/palette.controller");
 
-router.post("/create", newPalette);
-router.get("/", getAllPalettes);
+
+router.post("/create", [isAuth], newPalette);
+router.get("/", [isAuth], getAllPalettes);
 router.get("/:paletteId", getPalettesById);
 router.delete("/:paletteId", deletePaletteById)
 router.put("/:paletteId", updatePaletteById)

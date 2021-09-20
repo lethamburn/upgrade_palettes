@@ -8,11 +8,12 @@ const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 // Metodo para crear una nueva paleta
 const newPalette = async (req, res, next) => {
   try {
+    console.log("req.autoridad", req.autoridad)
     const newPalette = new Palette();
     newPalette.name = req.body.name;
     newPalette.description = req.body.description;
     newPalette.colors = req.body.colors;
-    newPalette.author = req.user._id;  ///este id usuario lo sacamos el token/user logueado
+    newPalette.author = req.autoridad.user._id;  ///este id usuario lo sacamos el token/user logueado
     const paletteDb = await newPalette.save()
     return res.json({
       status: 201,
