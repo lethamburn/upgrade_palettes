@@ -2,8 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const mongoose = require("mongoose");
 
-//const mongoDb = process.env.MONGO_DB;
-const mongoDb = 'mongodb+srv://admin:Upgrade2021@cluster0.3thlc.mongodb.net/UPGRADE-PALETTES?retryWrites=true&w=majority'
+const mongoDb = process.env.MONGO_DB;
 
 const connect = async () => {
   try {
