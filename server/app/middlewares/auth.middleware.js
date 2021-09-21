@@ -24,6 +24,7 @@ const isAuth = (req, res, next) => {
         var token = jwt.verify(jwtString, req.app.get("secretKey"));
         token.user.password=null;
         //console.log("token tras verify",token)  
+        
     } catch(e){
         //console.log(e)
         res.statusCode = 400
