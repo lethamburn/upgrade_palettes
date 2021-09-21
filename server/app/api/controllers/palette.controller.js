@@ -54,7 +54,7 @@ const getAllPalettes = async (req, res, next) => {
 const getPalettesById = async (req, res, next) => {
   try {
     const { paletteId } = req.params;
-    const paletteDb = await Palette.findById(paletteId).populate("colors").populate("author");
+    const paletteDb = await Palette.findById(paletteId).populate("colors");
     return res.json({
       status: 200,
       message: HTTPSTATUSCODE[200],
