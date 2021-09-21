@@ -134,6 +134,7 @@ const updatePaletteById = async (req, res, next) => {
   }
 }
 
+//Metodo para obtener los documentos de la bd segun el usuario que lo ha creado
 const getAllPalettesByUser = async (req, res, next) => {
   try {
     const author = req.authority.id;
