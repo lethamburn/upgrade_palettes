@@ -37,8 +37,10 @@ const authenticate = async (req, res, next) => {
     if (bcrypt.compareSync(req.body.password, userInfo.password)) {
       userInfo.password=null
       const token = jwt.sign(
-       // { id: userInfo._id },
-        { user: userInfo },
+        { 
+          id: userInfo._id,
+          name: userInfo.name 
+        }, 
         req.app.get("secretKey"),
         { expiresIn: "1h" }
       );
