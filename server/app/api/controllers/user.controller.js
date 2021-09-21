@@ -64,11 +64,23 @@ const authenticate = async (req, res, next) => {
   }
 }
   
-//logout
+const logout =  (req, res, next) => {
+  try{
+    return res.json({ 
+      status: 200, 
+      message: HTTPSTATUSCODE[200], 
+      token: null 
+    });
+  }catch(err){
+    return next(err)
+  }
+}
+
 
 module.exports = {
   createUser,
-  authenticate
+  authenticate,
+  logout
 }
 
 
