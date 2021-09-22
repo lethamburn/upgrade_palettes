@@ -17,7 +17,7 @@ const LoginForm = (props) => {
 
       const user = await loginUser(form);
       props.saveUser(user.data.user);
-      console.log("¿Usuario?", user.data.user)
+      
     } catch (error) {
       setError(error.message);
     }
