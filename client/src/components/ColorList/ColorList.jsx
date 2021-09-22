@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import getColors from "../../api/fetch_colors";
-import "./Color_List.css";
+import "./ColorList.css";
 
-const Color_List = () => {
+const ColorList = () => {
   useEffect(() => {
     formatColors();
   }, []);
@@ -35,4 +35,4 @@ const Color_List = () => {
   );
 };
 
-export default Color_List;
+export default ColorList;

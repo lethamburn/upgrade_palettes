@@ -1,9 +1,9 @@
 import React from 'react'
-import { Color_List } from '../../components'
+import { ColorList } from '../../components'
 const Colors = () => {
     return (
         <div>
-            <Color_List />
+            <ColorList />
         </div>
     )
 }

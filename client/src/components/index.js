@@ -1,3 +1,4 @@
-import Color_List from "./Color_List/Color_List";
+import ColorList from "./ColorList/ColorList";
+import LoginForm from "./LoginForm/LoginForm";
 
-export { Color_List };
+export { ColorList, LoginForm };
