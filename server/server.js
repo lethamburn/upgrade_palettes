@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:4200'],
+  origin: ['http://localhost:3000', 'http://localhost:4000'],
   credentials: true,
 }));
 
@@ -54,6 +54,6 @@ app.use((err, req, res, next) => {
 
 app.disable('x-powered-by')
 //Levantamos el servidor
-app.listen(3000, () => {
-  console.log("Node server listening on port 3000");
+app.listen(4000, () => {
+  console.log("Node server listening on port 4000");
 });
