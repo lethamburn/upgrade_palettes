@@ -3,11 +3,11 @@ const Color = require("../models/Color");
 // Cargamos el fichero de los HTTPSTATUSCODE
 const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 
-//Metodo para retornar todos los colors registrados en la base de datos
-//Se le añade paginación
+//Metodo para retornar todos los colores registrados en la base de datos
+
 const getAllColors = async (req, res, next) => {
   try {
-    if (req.query.page) {
+    if (req.query.page) { //Se le añade paginación
       const page = parseInt(req.query.page);
       const skip = (page - 1) * 20;
       const colors = await Color.find().skip(skip).limit(20);
@@ -29,7 +29,7 @@ const getAllColors = async (req, res, next) => {
   }
 };
 
-// Metodo para la busqueda de colors por ID
+// Metodo para la busqueda de colores por ID
 const getColorById = async (req, res, next) => {
   try {
     const { colorId } = req.params;
@@ -43,7 +43,7 @@ const getColorById = async (req, res, next) => {
     return next(err);
   }
 };
-
+//Exportamos las funciones
 module.exports = {
   getAllColors,
   getColorById,

@@ -17,14 +17,16 @@ const createUser = async (req, res, next) => {
     newUser.password = req.body.password;
     newUser.favPalettes = [];
 
-    //comprobar si el user existe
+    //Pnt. mejora: comprobar si el user existe antes de guardar
+    
     const userDb = await newUser.save();
+    
+    //Pnt. mejora: autenticar directamente al usuario
     return res.json({
       status: 201,
       message: HTTPSTATUSCODE[201],
       data: null
     });
-    //fuera return y llamamos a autenticuate. o creamos token no se!
   } catch (err) {
     return next(err);
   }
@@ -32,10 +34,13 @@ const createUser = async (req, res, next) => {
 
 const authenticate = async (req, res, next) => {
   try {
+    //Buscamos al user en bd
     const userInfo = await User.findOne({ email: req.body.email })
-
+    //Comparamos la contraseña
     if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+      //eliminamos la contraseña del usuario
       userInfo.password = null
+      //creamos el token con el id y el name del user
       const token = jwt.sign(
         {
           id: userInfo._id,
@@ -44,13 +49,10 @@ const authenticate = async (req, res, next) => {
         req.app.get("secretKey"),
         { expiresIn: "1h" }
       );
-      //eliminar el password de user id
-      userInfo.password = null;
+     
       //console.log('userInfo, ',userInfo)
       //console.log('token, ',token)
-
-
-
+      //devolvemos el usuario y el token.
       return res.json({
         status: 200,
         message: HTTPSTATUSCODE[200],
@@ -63,7 +65,7 @@ const authenticate = async (req, res, next) => {
     return next(err);
   }
 }
-
+//funcion logout, iguala el token a null.
 const logout = (req, res, next) => {
   try {
     return res.json({
@@ -75,7 +77,6 @@ const logout = (req, res, next) => {
     return next(err)
   }
 }
-
 
 module.exports = {
   createUser,
