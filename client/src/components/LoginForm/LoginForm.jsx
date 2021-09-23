@@ -14,8 +14,11 @@ const LoginForm = (props) => {
         email: email.value,
         password: password.value,
       };
-
+      console.log("form", form)
       const user = await loginUser(form);
+      console.log("user", user)
+      console.log("user.data.user", user.data.user);
+      // no funciona la funcion saveUser variable de contexto?
       props.saveUser(user.data.user);
       
     } catch (error) {

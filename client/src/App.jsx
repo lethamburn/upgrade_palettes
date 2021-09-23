@@ -5,11 +5,14 @@ import { Home, Login, Palettes, Profile, Register, Colors } from "./pages";
 import { Nav, Footer } from "./layouts";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
+  
   const saveUser = (user) => {
     setUser(user);
     console.log(user);
   };
+
+  console.log(user)
   return (
     <div className="App">
       <h2>Upgrade Palettes</h2>
