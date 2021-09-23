@@ -1,25 +1,20 @@
 import axios from "axios";
 import { url } from "../../api";
-import { toast } from "react-toastify";
 
 export const signUp = (user) => {
     return (dispatch) => {
         axios
             .post(`${url}/register`, user)
-            .then((token) => {
-                localStorage.setItem("token", token.data);
+            .then((data) => {
+                console.log('Register - OK', data)
 
                 dispatch({
                     type: "SIGN_UP",
-                    token: token.data,
+                    token: data,
                 });
             })
             .catch((error) => {
                 console.log(error.response);
-
-                toast.error(error.response?.data, {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                });
             });
     };
 };
@@ -28,20 +23,16 @@ export const signIn = (email, password) => {
     return (dispatch) => {
         axios
             .post(`${url}/authenticate`, { email, password })
-            .then((token) => {
-                localStorage.setItem("token", token.data);
+            .then((response) => {
+                localStorage.setItem("token", response.data.data.token);
 
                 dispatch({
                     type: "SIGN_IN",
-                    token: token.data,
+                    token: response.data.data,
                 });
             })
             .catch((error) => {
                 console.log(error.response);
-
-                toast.error(error.response?.data, {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                });
             });
     };
 };
