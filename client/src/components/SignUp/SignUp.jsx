@@ -33,7 +33,7 @@ const SignUp = () => {
                 autoComplete="off"
                 onSubmit={handleSubmit}
             >
-                <h1>signUp;</h1>
+                <h1>signUp:</h1>
                 <TextField
                     id="enter-name"
                     label="enterName"
