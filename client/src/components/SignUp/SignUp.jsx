@@ -23,6 +23,7 @@ const SignUp = () => {
     const classes = useStyles();
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+
     const [user, setUser] = useState({
         name: "",
         email: "",
