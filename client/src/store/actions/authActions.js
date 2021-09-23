@@ -6,7 +6,7 @@ export const signUp = (user) => {
         axios
             .post(`${url}/register`, user)
             .then((data) => {
-                console.log('Register - OK', data)
+                console.log('Register - OK TODO', data)
 
                 dispatch({
                     type: "SIGN_UP",
