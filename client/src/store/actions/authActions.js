@@ -25,6 +25,8 @@ export const signIn = (email, password) => {
             .post(`${url}/authenticate`, { email, password })
             .then((response) => {
                 localStorage.setItem("token", response.data.data.token);
+                debugger;
+                localStorage.setItem("user", response.data.data.user);
 
                 dispatch({
                     type: "SIGN_IN",

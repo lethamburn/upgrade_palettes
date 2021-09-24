@@ -1,4 +1,3 @@
-//Estado inicial -> todo a null y mira si hubiese token
 const initialState = {
     token: localStorage.getItem("token"),
     name: null,
@@ -16,9 +15,9 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...initialState,
                 token: action.token.token,
-                name: action.token.user.name,
-                email: action.token.user.email,
-                _id: action.token.user._id,
+                name: action?.token?.user?.name,
+                email: action?.token?.user?.email,
+                _id: action?.token?.user?._id,
             };
         case "SIGN_OUT":
             localStorage.removeItem("token");
